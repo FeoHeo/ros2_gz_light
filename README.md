@@ -9,7 +9,7 @@ Install ROS2: https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians
 
 Install Gazebo: https://gazebosim.org/docs/fortress/install_ubuntu
 
-##Getting Started
+## Getting Started
 
 Gazebo bridge is a really useful tool if you want to exchange messages between ROS2 and Gazebo
 
