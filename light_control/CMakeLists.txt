@@ -31,7 +31,7 @@ endif()
 # list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
 # add_library(light_control_test src/light_control_test.cpp)
-add_executable(light_control src/light_control_test.cpp)
+add_executable(light_control src/light_controller.cpp)
 ament_target_dependencies(light_control rclcpp std_msgs ros_gz_interfaces geometry_msgs)
 
 install( TARGETS 
