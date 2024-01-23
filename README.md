@@ -52,6 +52,7 @@ Inside terminal 3, run:
 ## Control the light
 
 Then, you try publishing a message to */box_state*
+
 Inside terminal 4, run:
 
     ros2 topic pub -1 /box_state std_msgs/msg/String "data: 'error'"
