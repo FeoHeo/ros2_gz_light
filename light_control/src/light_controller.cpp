@@ -7,9 +7,14 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+
+//include the std_msgs
 #include "std_msgs/msg/int32.hpp"
 #include "std_msgs/msg/color_rgba.hpp" //Why is it so weird? Can't it be ColorRGBA like in ROS1???
 #include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/bool.hpp"
+
+//include ros_bridge msgs to build the light
 #include "ros_gz_interfaces/msg/light.hpp"
 #include "geometry_msgs/msg/pose.hpp"
 #include "geometry_msgs/msg/vector3.hpp"
@@ -26,6 +31,7 @@ public:
         );
 
         publisher_ = this->create_publisher<ros_gz_interfaces::msg::Light>("world/light_test/light_config",10);
+        ackPub_ = this->create_publisher<std_msgs::msg::Bool>("server_bridge_msgs/cmd_ack",10);
 
     }
 
@@ -108,6 +114,7 @@ private:
 
     void colorCb(const std_msgs::msg::String &msg) {
         RCLCPP_INFO_STREAM(this->get_logger() , "Received: " << msg.data);
+        ackPub_.publish();
         color_control(msg.data);        
         
     };
@@ -116,6 +123,7 @@ private:
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
     rclcpp::Publisher<ros_gz_interfaces::msg::Light>::SharedPtr publisher_;
     ros_gz_interfaces::msg::Light lightReturn;
+    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr ackPub_;
 };
 
 int main(int argc , char* argv[]) {

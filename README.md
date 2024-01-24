@@ -108,6 +108,7 @@ Navigate to *{WORKSPACE}/src/mqtt_bridge/config/demo_params.yaml*. Then copy-pas
 
 
         bridge7: ["mqtt_bridge.bridge:MqttToRosBridge","std_msgs.msg:String","test","/box_state"]
+        bridge8: ["mqtt_bridge.bridge:RosToMqttBridge","std_msgs.msg:Bool","/server_bridge_msgs/cmd_ack","ack"]
 
 Now run MqttX, click on and **add a new conenction**. It can either a [add connection] button or the plus symbol next to [connections]
 
@@ -136,3 +137,5 @@ In another terminal, run:
 You should see the message being published to the topic. Run the full ROS2 bridge, process and world. As instructed above and when sending message through MqttX, the light in Gazebo should change according to it.
 
 Remember to check for number of connections, connection type in the .yaml file as it is commonly mistaken
+
+The code also publish a topic named *ack* to mqtt_bridge, this will publish **true** whenever it received input(just something I used for debugging)
