@@ -58,3 +58,79 @@ Inside terminal 4, run:
 
 The light inside the simulation should turn red (delete -1 if you want to publish continously). Read the code inside */light_control/src/light_controller.cpp* for more colors.
 
+
+## Publish from MqttX
+
+You can also publish messages from MqttX to ROS2. And from ROS2, it will transfer the message to Gazebo. MqttX is a topic broker, it will give you a space to better organize messaages and publish message easily, without using *ros2 topic pub* every time.
+
+You can install MqttX from the Ubuntu store (the app store on your sidebar)
+
+Then install mqtt bridge, this is a tool which will provide a bridge between mqttX and ROS2.
+
+    sudo apt install python3-pip
+    sudo apt install ros-humble-rosbridge-library
+    sudo apt install mosquitto mosquitto-clients
+
+Inside colcon workspace
+
+    cd src
+    git clone https://github.com/groove-x/mqtt_bridge.git
+    pip3 install -r dev-requirements.txt
+    git checkout ros2
+
+Now as you have your files installed, you can configure the topics that you want to pub, sub to.
+
+More details for the bridge is in: https://github.com/groove-x/mqtt_bridge/blob/ros2/README.md 
+
+Navigate to *{WORKSPACE}/src/mqtt_bridge/config/demo_params.yaml*. Then copy-paste this code in.
+
+    mqtt_bridge_node:
+    ros__parameters:
+        mqtt:
+        client:
+            protocol: 4      # MQTTv311
+        connection:
+            host: "localhost"
+            port: 1883
+            keepalive: 60
+        private_path: "device/001"
+        serializer: json:dumps
+        deserializer: json:loads
+        n_bridges: 7
+        bridge:
+        bridge1: ["mqtt_bridge.bridge:RosToMqttBridge","std_msgs.msg:Bool","/ping","ping"]
+        bridge2: ["mqtt_bridge.bridge:MqttToRosBridge","std_msgs.msg:Bool","ping","/pong"]
+        bridge3: ["mqtt_bridge.bridge:RosToMqttBridge","std_msgs.msg:String","/echo","echo"]
+        bridge4: ["mqtt_bridge.bridge:MqttToRosBridge","std_msgs.msg:String","echo","/back"]
+        bridge5: ["mqtt_bridge.bridge:RosToMqttBridge","std_msgs.msg:String","/private/echo","~/echo"]
+        bridge6: ["mqtt_bridge.bridge:MqttToRosBridge","std_msgs.msg:String","~/echo", "/private/back"]
+
+
+        bridge7: ["mqtt_bridge.bridge:MqttToRosBridge","std_msgs.msg:String","test","/box_state"]
+
+Now run MqttX, click on and **add a new conenction**. It can either a [add connection] button or the plus symbol next to [connections]
+
+Then, change the **Host** to: mqtt:// localhost
+
+change Port to: 1883
+
+Next, **Connect** and add a **New Subscription**. Set the topic to 'test'. From the chat section, change topic to 'test'.
+
+And the content of the chatbox:
+
+    {
+        "data": "error"
+    }
+
+Run the bridge:
+
+    ros2 launch mqtt_bridge demo.launch.py
+
+Now you should see the topic being published to */box_state*
+
+In another terminal, run:
+
+    ros2 topic echo /box_state
+
+You should see the message being published to the topic. Run the full ROS2 bridge, process and world. As instructed above and when sending message through MqttX, the light in Gazebo should change according to it.
+
