@@ -135,3 +135,4 @@ In another terminal, run:
 
 You should see the message being published to the topic. Run the full ROS2 bridge, process and world. As instructed above and when sending message through MqttX, the light in Gazebo should change according to it.
 
+Remember to check for number of connections, connection type in the .yaml file as it is commonly mistaken
